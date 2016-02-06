@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="apps.morad.com.poker" >
+
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
+
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <permission android:name="apps.morad.com.poker.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="apps.morad.com.poker.permission.C2D_MESSAGE" />
+
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    
+    <application
+        android:name=".PokerApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="Poker.db" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="6" />
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="apps.morad.com.poker.models.Member, apps.morad.com.poker.models.Event, apps.morad.com.poker.models.Game, apps.morad.com.poker.models.MemberInEvent, apps.morad.com.poker.models.MemberInGame" />
+
+        <provider
+            android:authorities="@string/authority"
+            android:name="com.activeandroid.content.ContentProvider"
+            android:exported="false"
+            android:syncable="true"></provider>
+
+        <activity
+            android:name=".activities.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <service android:name=".services.AccountAuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator"></meta-data>
+        </service>
+
+        <service android:name=".services.DataSyncAdapterService">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter"/>
+        </service>
+
+        <activity
+            android:name=".activities.AddEventActivity"
+            android:label="@string/title_activity_add_event"
+            android:parentActivityName=".activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="apps.morad.com.poker.activities.MainActivity" />
+        </activity>
+        <activity android:name=".activities.AddOrUpdateGameActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="apps.morad.com.poker.activities.MainActivity" />
+        </activity>
+
+        <receiver
+            android:enabled="true"
+            android:name=".receivers.StartSyncReceiver"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="apps.morad.com.poker.receivers.START_SYNC"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="apps.morad.com.poker" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".services.MyGCMListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".services.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".services.RegistrationIntentService"
+            android:exported="false">
+        </service>
+    </application>
+
+</manifest>

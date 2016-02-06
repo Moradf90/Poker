@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<apps.morad.com.poker.thirdParty.MaterialRippleLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:mrl_rippleAlpha="0.2"
+    app:mrl_rippleColor="@color/colorPrimary"
+    app:mrl_rippleHover="true"
+    app:mrl_rippleOverlay="true">
+
+    <FrameLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            app:cardBackgroundColor="@color/colorCardBackground"
+            app:cardCornerRadius="3dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/event_is_closed"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/closed_event"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text="TAG"
+                        android:id="@+id/event_tag"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="18dp"
+                        android:gravity="center_vertical|center"
+                        android:layout_weight="1"/>
+
+                    <LinearLayout
+                        android:id="@+id/actions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <apps.morad.com.poker.thirdParty.MaterialRippleLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:mrl_rippleAlpha="0.3"
+                            app:mrl_rippleColor="@color/colorPrimaryDark"
+                            app:mrl_rippleHover="true"
+                            app:mrl_rippleRoundedCorners="50dp"
+                            app:mrl_rippleOverlay="true">
+                            <TextView
+                                android:id="@+id/close_action"
+                                android:drawableRight="@drawable/closed_event"
+                                android:layout_width="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_height="wrap_content" />
+                        </apps.morad.com.poker.thirdParty.MaterialRippleLayout>
+                        <apps.morad.com.poker.thirdParty.MaterialRippleLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:mrl_rippleAlpha="0.3"
+                            app:mrl_rippleColor="@color/colorPrimaryDark"
+                            app:mrl_rippleHover="true"
+                            app:mrl_rippleRoundedCorners="50dp"
+                            app:mrl_rippleOverlay="true">
+                            <TextView
+                                android:id="@+id/edit_action"
+                                android:drawableRight="@drawable/edit"
+                                android:layout_width="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_height="wrap_content" />
+                        </apps.morad.com.poker.thirdParty.MaterialRippleLayout>
+                        <apps.morad.com.poker.thirdParty.MaterialRippleLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:mrl_rippleAlpha="0.3"
+                            app:mrl_rippleColor="@color/colorPrimaryDark"
+                            app:mrl_rippleHover="true"
+                            app:mrl_rippleRoundedCorners="50dp"
+                            app:mrl_rippleOverlay="true">
+                            <TextView
+                                android:id="@+id/delete_action"
+                                android:drawableRight="@drawable/delete"
+                                android:layout_width="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_height="wrap_content" />
+                        </apps.morad.com.poker.thirdParty.MaterialRippleLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/event_date"
+                        android:drawableLeft="@drawable/time"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:padding="2dp"
+                        android:text="1/1/2015 09:00"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimaryText"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical" />
+
+                    <TextView
+                        android:drawableLeft="@drawable/map"
+                        android:id="@+id/event_location"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:padding="2dp"
+                        android:textColor="@color/colorPrimaryText"
+                        android:text="at ein alsrar"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:drawableLeft="@drawable/event_member"
+                        android:id="@+id/event_creator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="fdkjkdj"
+                        android:textColor="@color/colorPrimaryText"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"/>
+
+                    <TextView
+                        android:drawableRight="@drawable/accept"
+                        android:id="@+id/event_accept"
+                        android:layout_width="match_parent"
+                        android:textColor="@color/colorPrimaryText"
+                        android:layout_weight="2"
+                        android:layout_height="match_parent"
+                        android:textAlignment="center"
+                        android:textSize="16dp"
+                        android:gravity="center_vertical|center" />
+
+                    <TextView
+                        android:drawableRight="@drawable/reject"
+                        android:id="@+id/event_reject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textColor="@color/colorPrimaryText"
+                        android:layout_marginRight="5dp"
+                        android:textSize="16dp"
+                        android:textAlignment="center"
+                        android:gravity="center_vertical|center"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/event_actions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <apps.morad.com.poker.thirdParty.CircleButton
+                        android:id="@+id/event_accept_btn"
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:src="@drawable/accept"
+                        android:layout_weight="1"
+                        app:cb_color="@color/greenColor"
+                        app:cb_pressedRingWidth="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimaryText"
+                        android:text="Accept"
+                        android:layout_gravity="center_vertical" />
+
+                    <apps.morad.com.poker.thirdParty.CircleButton
+                        android:id="@+id/event_reject_btn"
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:src="@drawable/reject"
+                        android:layout_weight="1"
+                        app:cb_color="@color/redColor"
+                        android:layout_gravity="center_vertical"
+                        app:cb_pressedRingWidth="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimaryText"
+                        android:text="Reject"
+                        android:layout_gravity="center_vertical" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+                    <TextView
+                        android:id="@+id/event_current_status"
+                        android:layout_width="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_margin="5dp"
+                        android:text="dklfjlkdj"
+                        android:textColor="@color/colorPrimaryText"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical" />
+
+                    <apps.morad.com.poker.thirdParty.CircleButton
+                        android:id="@+id/event_change_status"
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:src="@drawable/maybe"
+                        app:cb_color="@color/colorPrimary"
+                        android:layout_gravity="center_vertical|center"
+                        app:cb_pressedRingWidth="5dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
+</apps.morad.com.poker.thirdParty.MaterialRippleLayout>

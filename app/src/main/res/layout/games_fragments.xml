@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <apps.morad.com.poker.thirdParty.widget.InboxBackgroundScrollView
+        android:overScrollMode="always"
+        android:scrollbars="none"
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:fillViewport="true" android:background="@color/colorBackgroundSilver"
+        android:layout_height="match_parent">
+        <apps.morad.com.poker.customUI.LinearViewAdapter
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent"
+            android:id="@+id/events_layouts">
+
+        </apps.morad.com.poker.customUI.LinearViewAdapter>
+    </apps.morad.com.poker.thirdParty.widget.InboxBackgroundScrollView>
+
+    <apps.morad.com.poker.thirdParty.widget.InboxLayoutListView
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:id="@+id/list_of_games"
+        android:layout_height="match_parent">
+
+    </apps.morad.com.poker.thirdParty.widget.InboxLayoutListView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:id="@+id/add_game_btn"
+        android:src="@drawable/add"/>
+
+</FrameLayout>

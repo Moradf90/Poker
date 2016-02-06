@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="5dp"
+    android:orientation="horizontal"
+    android:layout_height="match_parent">
+
+    <apps.morad.com.poker.thirdParty.MaskableFrameLayout
+        android:layout_width="40dp"
+        app:mask="@drawable/masking_masking"
+        app:porterduffxfermode="DST_IN"
+        android:padding="-2dp"
+        android:layout_margin="3dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical">
+        <com.facebook.login.widget.ProfilePictureView
+            android:layout_width="40dp"
+            android:id="@+id/member_image"
+            android:layout_height="40dp">
+        </com.facebook.login.widget.ProfilePictureView>
+    </apps.morad.com.poker.thirdParty.MaskableFrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:gravity="left"
+        android:padding="2dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="5dp"
+        android:textSize="16dp"
+        android:layout_gravity="center_vertical|center"
+        android:textColor="@color/colorPrimaryText"
+        android:id="@+id/member_name"/>
+
+    <LinearLayout
+        android:layout_gravity="center_vertical|center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/member_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryText"
+            android:text="#1"
+            android:layout_gravity="center_vertical|center"/>
+
+        <TextView
+            android:id="@+id/member_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textStyle="bold"
+            android:text="-10 pt"
+            android:layout_gravity="center_vertical|center"/>
+
+    </LinearLayout>
+</LinearLayout>

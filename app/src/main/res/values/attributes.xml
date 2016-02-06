@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MaterialRippleLayout">
+        <attr name="mrl_rippleColor" format="color" localization="suggested" />
+        <attr name="mrl_rippleDimension" format="dimension" localization="suggested" />
+        <attr name="mrl_rippleOverlay" format="boolean" localization="suggested" />
+        <attr name="mrl_rippleAlpha" format="float" localization="suggested" />
+        <attr name="mrl_rippleDuration" format="integer" localization="suggested" />
+        <attr name="mrl_rippleFadeDuration" format="integer" localization="suggested" />
+        <attr name="mrl_rippleHover" format="boolean" localization="suggested" />
+        <attr name="mrl_rippleBackground" format="color" localization="suggested" />
+        <attr name="mrl_rippleDelayClick" format="boolean" localization="suggested" />
+        <attr name="mrl_ripplePersistent" format="boolean" localization="suggested" />
+        <attr name="mrl_rippleInAdapter" format="boolean" localization="suggested" />
+        <attr name="mrl_rippleRoundedCorners" format="dimension" localization="suggested" />
+    </declare-styleable>
+    <declare-styleable name="MaskableFrameLayout">
+        <attr name="mask" format="reference"/>
+        <attr name="porterduffxfermode">
+            <enum name="ADD" value="0"/>
+            <enum name="CLEAR" value="1"/>
+            <enum name="DARKEN " value="2"/>
+            <enum name="DST" value="3"/>
+            <enum name="DST_ATOP" value="4"/>
+            <enum name="DST_IN" value="5"/>
+            <enum name="DST_OUT" value="6"/>
+            <enum name="DST_OVER" value="7"/>
+            <enum name="LIGHTEN" value="8"/>
+            <enum name="MULTIPLY" value="9"/>
+            <enum name="OVERLAY" value="10"/>
+            <enum name="SCREEN" value="11"/>
+            <enum name="SRC" value="12"/>
+            <enum name="SRC_ATOP" value="13"/>
+            <enum name="SRC_IN" value="14"/>
+            <enum name="SRC_OUT" value="15"/>
+            <enum name="SRC_OVER" value="16"/>
+            <enum name="XOR" value="17"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="CircleButton">
+        <attr name="cb_color" format="color" />
+        <attr name="cb_pressedRingWidth" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension" />
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_fill_color" format="color" />
+    </declare-styleable>
+    <declare-styleable name="BottomSheetDialog">
+        <attr name="bsd_inDuration" format="reference|integer"/>
+        <attr name="bsd_inInterpolator" format="reference"/>
+        <attr name="bsd_outDuration" format="reference|integer"/>
+        <attr name="bsd_outInterpolator" format="reference"/>
+        <attr name="bsd_cancelable" format="reference|boolean"/>
+        <attr name="bsd_canceledOnTouchOutside" format="reference|boolean"/>
+        <attr name="bsd_dimAmount" format="reference|float"/>
+        <attr name="android:layout_height" />
+    </declare-styleable>
+    <declare-styleable name="HorizontalListView">
+        <attr name="dividerWidth" format="dimension" />
+        <attr name="android:divider" />
+        <attr name="android:requiresFadingEdge" />
+        <attr name="android:fadingEdgeLength" />
+    </declare-styleable>
+</resources>
