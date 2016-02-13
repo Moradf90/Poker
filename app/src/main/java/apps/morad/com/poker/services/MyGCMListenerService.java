@@ -154,10 +154,10 @@ public class MyGCMListenerService extends GcmListenerService {
             MemberInGame mig = new Select()
                     .from(MemberInGame.class)
                     .where(MemberInGame.GAME_ID_COLUMN + "= ? and ("
-                                    + MemberInGame.FB_ID_COLUMN + "= ? and " + MemberInGame.ORDER_ID_COLUMN + "= ?)",
+                                    + MemberInGame.FB_ID_COLUMN + "= ? and " + MemberInGame.ROUND_COLUMN + "= ?)",
                             obj.getString(MemberInGame.GAME_ID_COLUMN),
                             obj.getString(MemberInGame.FB_ID_COLUMN),
-                            MemberInGame.NOT_ORDERED_MEMBER)
+                            obj.getInt(MemberInGame.ROUND_COLUMN))
                     .executeSingle();
 
             if(mig != null){
@@ -200,7 +200,7 @@ public class MyGCMListenerService extends GcmListenerService {
             new Delete().from(MemberInGame.class)
                     .where(MemberInGame.GAME_ID_COLUMN + "=?", obj.getString(MemberInGame.GAME_ID_COLUMN))
                     .where(MemberInGame.FB_ID_COLUMN + "=?", obj.getString(MemberInGame.FB_ID_COLUMN))
-                    .where(MemberInGame.ORDER_ID_COLUMN +"=?", MemberInGame.NOT_ORDERED_MEMBER)
+                    .where(MemberInGame.ROUND_COLUMN +"=?", obj.getInt(MemberInGame.ORDER_ID_COLUMN))
                     .execute();
 
             notifyUpdate(MainActivity.MEMBERS_IN_GAMES_UPDATED);
@@ -251,8 +251,9 @@ public class MyGCMListenerService extends GcmListenerService {
 
 
         }else if(type.equals("MemberInGame")){
-            MemberInGame mem = new MemberInGame(obj.getString(MemberInGame.FB_ID_COLUMN),obj.getString(MemberInGame.GAME_ID_COLUMN));
-            mem.save();
+            MemberInGame mem = new MemberInGame(obj.getString(MemberInGame.FB_ID_COLUMN),
+                    obj.getString(MemberInGame.GAME_ID_COLUMN));
+            mem.setRound(obj.getInt(MemberInGame.ROUND_COLUMN)).save();
             notifyUpdate(MainActivity.MEMBERS_IN_GAMES_UPDATED);
         }
     }

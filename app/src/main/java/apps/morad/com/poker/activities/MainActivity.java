@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -27,7 +26,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.activeandroid.query.Select;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -41,22 +39,18 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import apps.morad.com.poker.R;
 import apps.morad.com.poker.fragments.AppFragment;
 import apps.morad.com.poker.fragments.LoginFragment;
 import apps.morad.com.poker.interfaces.IMemberLoginManager;
-import apps.morad.com.poker.interfaces.IRefreshView;
 import apps.morad.com.poker.models.Member;
 import apps.morad.com.poker.receivers.StartSyncReceiver;
 import apps.morad.com.poker.services.RegistrationIntentService;
 import apps.morad.com.poker.utilities.MembersLoader;
 import apps.morad.com.poker.utilities.Utilities;
 
-public class MainActivity extends AppCompatActivity implements IMemberLoginManager, IRefreshView{
+public class MainActivity extends AppCompatActivity implements IMemberLoginManager{
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public static final String REGISTRATION_COMPLETE = "registration_completed";
@@ -68,9 +62,9 @@ public class MainActivity extends AppCompatActivity implements IMemberLoginManag
 
     CallbackManager _callbackManager;
     AccessTokenTracker _accessTokenTracker;
-    Timer _timer;
 
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private BroadcastReceiver _registrationBroadcastReceiver;
+    private BroadcastReceiver _membersBroadcastReceiver;
     ProgressDialog prog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements IMemberLoginManag
         setContentView(R.layout.activity_main);
 
         PreferenceManager.getDefaultSharedPreferences(this)
-                .edit().putString(getString(R.string.pref_server_url), "http://10.0.0.9:8090").commit();
+                .edit().putString(getString(R.string.pref_server_url), "http://poker-moradf90.rhcloud.com").commit();
 
         prog = new ProgressDialog(this);
         prog.setCancelable(false);
@@ -89,7 +83,14 @@ public class MainActivity extends AppCompatActivity implements IMemberLoginManag
 
         _accessTokenTracker.startTracking();
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        _membersBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                MembersLoader.refresh();
+            }
+        };
+
+        _registrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 prog.hide();
@@ -151,34 +152,18 @@ public class MainActivity extends AppCompatActivity implements IMemberLoginManag
     protected void onResume() {
         super.onResume();
 
-        _timer = new Timer();
-
-        _timer.schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        refreshView();
-                    }
-                });
-
-            }
-        }, 0, 1000);
-
         checkGooglePlayServiceAvailability();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+        LocalBroadcastManager.getInstance(this).registerReceiver(_registrationBroadcastReceiver,
                 new IntentFilter(REGISTRATION_COMPLETE));
+        LocalBroadcastManager.getInstance(this).registerReceiver(_membersBroadcastReceiver,
+                new IntentFilter(MEMBERS_UPDATED));
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        _timer.cancel();
-        _timer = null;
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(_registrationBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(_membersBroadcastReceiver);
         super.onPause();
     }
 
@@ -257,20 +242,6 @@ public class MainActivity extends AppCompatActivity implements IMemberLoginManag
     protected void onDestroy() {
         super.onDestroy();
         _accessTokenTracker.stopTracking();
-    }
-
-    @Override
-    public void refreshView() {
-
-        FragmentManager fragmentManager = getFragmentManager();
-
-        Fragment appFragment = fragmentManager.findFragmentByTag(AppFragment.FRAGMENT_TAG);
-
-        if(appFragment != null) {
-            ((IRefreshView)appFragment).refreshView();
-        }
-
-        MembersLoader.refresh();
     }
 
     @Override

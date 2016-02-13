@@ -122,9 +122,6 @@
                 android:textColor="@color/colorPrimaryText"
                 android:layout_margin="5dp"
                 android:id="@+id/member_id"/>
-<com.facebook.login.widget.LoginButton
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
 
         </LinearLayout>
     </android.support.v4.widget.DrawerLayout>

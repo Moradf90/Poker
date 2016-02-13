@@ -67,6 +67,13 @@ public class Game extends Model {
         this.gameId = gameId;
     }
 
+    public Game(String gameId ,String eventId)
+    {
+        super();
+        this.eventId = eventId;
+        this.gameId = gameId;
+    }
+
     @JsonIgnore
     public String getEventId() {
         return eventId;

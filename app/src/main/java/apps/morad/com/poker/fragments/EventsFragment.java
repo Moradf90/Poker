@@ -3,9 +3,13 @@ package apps.morad.com.poker.fragments;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -13,16 +17,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.activeandroid.content.ContentProvider;
 import com.activeandroid.query.Select;
@@ -30,18 +31,16 @@ import com.facebook.Profile;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import apps.morad.com.poker.R;
 import apps.morad.com.poker.activities.AddEventActivity;
+import apps.morad.com.poker.activities.MainActivity;
 import apps.morad.com.poker.adapters.EventsCursorAdapter;
 import apps.morad.com.poker.adapters.MemberInEventAdapter;
-import apps.morad.com.poker.interfaces.IRefreshView;
 import apps.morad.com.poker.interfaces.ITaggedFragment;
 import apps.morad.com.poker.models.Event;
-import apps.morad.com.poker.models.Game;
 import apps.morad.com.poker.models.Member;
 import apps.morad.com.poker.models.MemberInEvent;
 import apps.morad.com.poker.thirdParty.BottomSheetDialog;
@@ -51,13 +50,15 @@ import apps.morad.com.poker.utilities.Utilities;
 /**
  * Created by Morad on 12/11/2015.
  */
-public class EventsFragment extends Fragment implements IRefreshView, ITaggedFragment{
+public class EventsFragment extends Fragment implements ITaggedFragment{
 
     public static final String FRAGMENT_TAG = "EventsFragment";
 
     private static final int LOADER_ID = 235;
 
     private static EventsFragment _instance;
+
+    private BroadcastReceiver _eventsUpdatedBroadcastReceiver;
 
     public static EventsFragment getInstance()
     {
@@ -73,8 +74,6 @@ public class EventsFragment extends Fragment implements IRefreshView, ITaggedFra
     LoaderManager.LoaderCallbacks<Cursor> loaderCallbacks;
     FloatingActionButton fab;
 
-    boolean isCompleteLoading;
-
     MemberInEventAdapter acceptedAdapter, rejectedAdapter, noStatusAdapter;
     BottomSheetDialog mBottomSheetDialog;
     View bottomSheetContentView;
@@ -86,7 +85,12 @@ public class EventsFragment extends Fragment implements IRefreshView, ITaggedFra
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.events_fragment, container, false);
+        return inflater.inflate(R.layout.events_fragment, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View rootView, Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
 
         final Member member = MembersLoader.getById(Profile.getCurrentProfile().getId());
 
@@ -143,8 +147,6 @@ public class EventsFragment extends Fragment implements IRefreshView, ITaggedFra
                 ShowBottomSheetDialog(eventId, isClosed, member, acceptedGrid, rejectedGrid, noStatusGrid);
             }
         });
-
-        return rootView;
     }
 
     private void ShowBottomSheetDialog(final String eventId, final boolean isClosed, final Member member,GridView acceptedGrid, GridView rejectedGrid, GridView noStatusGrid ) {
@@ -296,7 +298,6 @@ public class EventsFragment extends Fragment implements IRefreshView, ITaggedFra
             @Override
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
                 adapter.swapCursor(data);
-                isCompleteLoading = true;
             }
 
             @Override
@@ -306,28 +307,42 @@ public class EventsFragment extends Fragment implements IRefreshView, ITaggedFra
         };
 
         getActivity().getLoaderManager().initLoader(LOADER_ID, null, loaderCallbacks);
+
+        _eventsUpdatedBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Event event = new Select().from(Event.class).where(Event.IS_CLOSED_COLUMN + "= 0").executeSingle();
+
+                if(event != null){
+                    fab.setVisibility(View.GONE);
+                }
+                else {
+                    Member member = MembersLoader.getById(Profile.getCurrentProfile().getId());
+
+                    if(member != null && member.getIsAdmin()){
+                        fab.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                getActivity().getLoaderManager().restartLoader(LOADER_ID, null, loaderCallbacks);
+            }
+        };
     }
 
     @Override
-    public void refreshView() {
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MainActivity.EVENTS_UPDATED);
+        intentFilter.addAction(MainActivity.MEMBERS_IN_EVENTS_UPDATED);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(_eventsUpdatedBroadcastReceiver,
+                intentFilter);
+    }
 
-        Event event = new Select().from(Event.class).where(Event.IS_CLOSED_COLUMN + "= 0").executeSingle();
-
-        if(event != null){
-            fab.setVisibility(View.GONE);
-        }
-        else {
-            Member member = MembersLoader.getById(Profile.getCurrentProfile().getId());
-
-            if(member != null && member.getIsAdmin()){
-                fab.setVisibility(View.VISIBLE);
-            }
-        }
-
-        if(isCompleteLoading){
-            isCompleteLoading = false;
-            getActivity().getLoaderManager().restartLoader(LOADER_ID, null, loaderCallbacks);
-        }
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(_eventsUpdatedBroadcastReceiver);
     }
 
     private void buildMembersStatuses(String eventId, boolean isClosed){

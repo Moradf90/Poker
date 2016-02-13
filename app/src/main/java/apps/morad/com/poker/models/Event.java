@@ -64,6 +64,12 @@ public class Event extends Model{
         this.creator = creator;
     }
 
+    public Event(String eventId, long createdDate, String creator) {
+        this.eventId = eventId;
+        this.createdDate = createdDate;
+        this.creator = creator;
+    }
+
     @JsonIgnore
     public String getEventId() {
         return eventId;

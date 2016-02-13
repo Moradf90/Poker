@@ -1,21 +1,20 @@
 package apps.morad.com.poker.fragments;
 
-import android.accounts.Account;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.ContentResolver;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,25 +22,11 @@ import android.widget.TextView;
 import com.facebook.Profile;
 import com.facebook.login.widget.ProfilePictureView;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
 import apps.morad.com.poker.R;
+import apps.morad.com.poker.activities.MainActivity;
 import apps.morad.com.poker.adapters.ActionAdapter;
 import apps.morad.com.poker.drawables.DrawerArrowDrawable;
 import apps.morad.com.poker.interfaces.IActionItemsClicked;
-import apps.morad.com.poker.interfaces.IRefreshView;
 import apps.morad.com.poker.interfaces.ITaggedFragment;
 import apps.morad.com.poker.models.Member;
 import apps.morad.com.poker.utilities.MembersLoader;
@@ -51,7 +36,7 @@ import static android.view.Gravity.START;
 /**
  * Created by Morad on 12/14/2015.
  */
-public class AppFragment extends Fragment implements IActionItemsClicked, IRefreshView {
+public class AppFragment extends Fragment implements IActionItemsClicked {
 
     public static final String FRAGMENT_TAG = "AppFragment";
 
@@ -75,7 +60,7 @@ public class AppFragment extends Fragment implements IActionItemsClicked, IRefre
     }
 
     View fragmentView;
-
+    private BroadcastReceiver _membersUpdatedBroadcastReceiver;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -120,9 +105,35 @@ public class AppFragment extends Fragment implements IActionItemsClicked, IRefre
 
         ((TextView)fragmentView.findViewById(R.id.member_id)).setText(Profile.getCurrentProfile().getId());
 
-        // toggleDrawer();
+        _membersUpdatedBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                refreshView();
+            }
+        };
+
+        refreshView();
 
         return fragmentView;
+    }
+
+    private void refreshView() {
+        MembersLoader.refresh();
+        if(Profile.getCurrentProfile() != null) {
+            Member current = MembersLoader.getById(Profile.getCurrentProfile().getId());
+
+            if (current != null) {
+                TextView score = ((TextView) fragmentView.findViewById(R.id.action_bar_profile_score));
+
+                score.setText(current.getScore() + " points");
+
+                if (current.getScore() <= 0) {
+                    score.setTextColor(getResources().getColor(R.color.redColor));
+                } else {
+                    score.setTextColor(getResources().getColor(R.color.greenColor));
+                }
+            }
+        }
     }
 
     private void toggleDrawer(){
@@ -155,7 +166,7 @@ public class AppFragment extends Fragment implements IActionItemsClicked, IRefre
                     case "Events":
                         onEventsItemClicked();
                         break;
-                    case "Games" :
+                    case "Games":
                         onGamesItemClicked();
                         break;
                 }
@@ -187,6 +198,14 @@ public class AppFragment extends Fragment implements IActionItemsClicked, IRefre
         }else {
             onMembersItemClicked();
         }
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(_membersUpdatedBroadcastReceiver, new IntentFilter(MainActivity.MEMBERS_UPDATED));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(_membersUpdatedBroadcastReceiver);
     }
 
     @Override
@@ -240,27 +259,4 @@ public class AppFragment extends Fragment implements IActionItemsClicked, IRefre
     public void onSettingsItemClicked() {
     }
 
-    @Override
-    public void refreshView() {
-
-        if(Profile.getCurrentProfile() != null) {
-            Member current = MembersLoader.getById(Profile.getCurrentProfile().getId());
-
-            if (current != null) {
-                TextView score = ((TextView) fragmentView.findViewById(R.id.action_bar_profile_score));
-
-                score.setText(current.getScore() + " points");
-
-                if (current.getScore() <= 0) {
-                    score.setTextColor(getResources().getColor(R.color.redColor));
-                } else {
-                    score.setTextColor(getResources().getColor(R.color.greenColor));
-                }
-            }
-
-            if (currentFragment != null && (currentFragmentObj instanceof IRefreshView)) {
-                ((IRefreshView) currentFragmentObj).refreshView();
-            }
-        }
-    }
 }

@@ -3,9 +3,12 @@ package apps.morad.com.poker.fragments;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -14,6 +17,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +40,12 @@ import java.util.List;
 
 import apps.morad.com.poker.R;
 import apps.morad.com.poker.activities.AddOrUpdateGameActivity;
+import apps.morad.com.poker.activities.MainActivity;
 import apps.morad.com.poker.adapters.EventGameGroupCursorAdapter;
 import apps.morad.com.poker.adapters.GamesCursorAdapter;
 import apps.morad.com.poker.adapters.MemberInEventAdapter;
 import apps.morad.com.poker.adapters.MemberOutGameAdapter;
 import apps.morad.com.poker.customUI.LinearViewAdapter;
-import apps.morad.com.poker.interfaces.IRefreshView;
 import apps.morad.com.poker.interfaces.ITaggedFragment;
 import apps.morad.com.poker.interfaces.OnDragStateChangeListener;
 import apps.morad.com.poker.models.Event;
@@ -59,7 +63,7 @@ import apps.morad.com.poker.utilities.Utilities;
 /**
  * Created by Morad on 12/25/2015.
  */
-public class GamesFragments extends Fragment implements IRefreshView ,ITaggedFragment{
+public class GamesFragments extends Fragment implements ITaggedFragment{
 
     public static final String FRAGMENT_TAG = "GamesFragment";
     private static final int LOADER_ID = 365;
@@ -76,13 +80,13 @@ public class GamesFragments extends Fragment implements IRefreshView ,ITaggedFra
         return _instance;
     }
 
+    private BroadcastReceiver _gamesUpdatedBroadcastReceiver;
 
     InboxLayoutListView inboxLayoutListView;
     GamesCursorAdapter gamesAdapter;
     LoaderManager.LoaderCallbacks<Cursor> loaderCallbacks;
     EventGameGroupCursorAdapter adapter;
     FloatingActionButton fab;
-    boolean isCompleteLoading;
     String eventId = "";
 
     MemberOutGameAdapter memberOutGameAdapter;
@@ -321,7 +325,6 @@ public class GamesFragments extends Fragment implements IRefreshView ,ITaggedFra
             @Override
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
                 adapter.swapCursor(data);
-                isCompleteLoading = true;
             }
 
             @Override
@@ -331,23 +334,39 @@ public class GamesFragments extends Fragment implements IRefreshView ,ITaggedFra
         };
 
         getActivity().getLoaderManager().initLoader(LOADER_ID, null, loaderCallbacks);
+
+        _gamesUpdatedBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                    getActivity().getLoaderManager().restartLoader(LOADER_ID, null, loaderCallbacks);
+
+
+                // refresh the games
+                if(!eventId.isEmpty()) {
+                    gamesAdapter.swapCursor(Utilities.fetchResultCursor(Game.class, true,
+                            Game.ORDER_ID_COLUMN, Game.EVENT_ID_COLUMN + "=?", eventId));
+                    gamesAdapter.notifyDataSetChanged();
+                }
+            }
+        };
     }
 
     @Override
-    public void refreshView() {
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MainActivity.EVENTS_UPDATED);
+        intentFilter.addAction(MainActivity.GAMES_UPDATED);
+        intentFilter.addAction(MainActivity.MEMBERS_IN_GAMES_UPDATED);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(_gamesUpdatedBroadcastReceiver,
+                intentFilter);
+    }
 
-        if(isCompleteLoading){
-            isCompleteLoading = false;
-            getActivity().getLoaderManager().restartLoader(LOADER_ID, null, loaderCallbacks);
-        }
-
-        // refresh the games
-        if(!eventId.isEmpty()) {
-            gamesAdapter.swapCursor(Utilities.fetchResultCursor(Game.class, true,
-                    Game.ORDER_ID_COLUMN, Game.EVENT_ID_COLUMN + "=?", eventId));
-            gamesAdapter.notifyDataSetChanged();
-        }
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(_gamesUpdatedBroadcastReceiver);
     }
 
     private void updateMembersArrays(String gameId){
@@ -455,7 +474,14 @@ public class GamesFragments extends Fragment implements IRefreshView ,ITaggedFra
             if(params.length > 0){
 
                 String memberId = params[0];
+
+                List<MemberInGame> migs = new Select().from(MemberInGame.class)
+                        .where(MemberInGame.GAME_ID_COLUMN + "=? and " + MemberInGame.FB_ID_COLUMN + "= ?",
+                                gameId, memberId).execute();
+
                 MemberInGame mig = new MemberInGame(memberId, gameId);
+                mig.setRound(migs.size() + 1);
+
                 try {
                     Utilities.sendRequest(url + "/memberInGameUpdate", "POST",
                             new JSONObject(Utilities.mapper.writeValueAsString(mig)));

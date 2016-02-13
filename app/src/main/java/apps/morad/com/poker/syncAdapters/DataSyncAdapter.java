@@ -92,24 +92,26 @@ public class DataSyncAdapter extends AbstractThreadedSyncAdapter {
         for(int index = 0 ; index < array.length(); index++){
             JSONObject mig = array.getJSONObject(index);
 
-            List<MemberInGame> nmig = new Select()
+            MemberInGame nmig = new Select()
                     .from(MemberInGame.class)
-                    .where(MemberInGame.GAME_ID_COLUMN + "= ? and " + MemberInGame.FB_ID_COLUMN + "= ?",
+                    .where(MemberInGame.GAME_ID_COLUMN + "= ? and " + MemberInGame.FB_ID_COLUMN + "= ? and " +
+                                    MemberInGame.ROUND_COLUMN + "=?",
                             mig.getString(MemberInGame.GAME_ID_COLUMN),
-                            mig.getString(MemberInGame.FB_ID_COLUMN))
-                    .execute();
+                            mig.getString(MemberInGame.FB_ID_COLUMN),
+                            mig.getInt(MemberInGame.ROUND_COLUMN))
+                    .executeSingle();
 
-
-
-            if(nmig == null || nmig.size() == 0){ // new member in game
+            if(nmig == null){ // new member in game
                 new MemberInGame(mig.getString(MemberInGame.FB_ID_COLUMN), mig.getString(MemberInGame.GAME_ID_COLUMN))
                         .setOrder(mig.getInt(MemberInGame.ORDER_ID_COLUMN))
                         .setScore(mig.getInt(MemberInGame.SCORE_COLUMN))
+                        .setRound(mig.getInt(MemberInGame.ROUND_COLUMN))
                         .save();
             }
             else {
-                int newOrder = mig.getInt(MemberInGame.ORDER_ID_COLUMN);
-
+                nmig.setOrder(mig.getInt(MemberInGame.ORDER_ID_COLUMN))
+                        .setScore(mig.getInt(MemberInGame.SCORE_COLUMN))
+                        .save();
             }
         }
 
@@ -153,10 +155,8 @@ public class DataSyncAdapter extends AbstractThreadedSyncAdapter {
                     .executeSingle();
 
             if(gme == null){ // new game
-                gme = new Game(game.getString(Game.GAME_ID_COLUMN), game.getString(Game.EVENT_ID_COLUMN),
-                        game.getString(Game.GAME_NAME_COLUMN), game.getBoolean(Game.IS_CONSIDERED_COLUMN),
-                        game.getInt(Game.ORDER_ID_COLUMN));
-
+                gme = new Game(game.getString(Game.GAME_ID_COLUMN), game.getString(Game.EVENT_ID_COLUMN));
+                gme.updateFromJson(game);
                 gme.save();
             }
             else {
@@ -178,10 +178,9 @@ public class DataSyncAdapter extends AbstractThreadedSyncAdapter {
                     .executeSingle();
 
             if(evnt == null){ // new event
-                evnt = new Event(event.getString(Event.EVENT_ID_COLUMN), event.getLong(Event.CREATED_DATE_COLUMN),
-                        event.getLong(Event.DATE_COLUMN), event.getString(Event.LOCATION_COLUMN),
-                        event.getString(Event.TAG_COLUMN), event.getString(Event.CREATOR_COLUMN));
-
+                evnt = new Event(event.getString(Event.EVENT_ID_COLUMN), event.getLong(Event.CREATED_DATE_COLUMN)
+                        , event.getString(Event.CREATOR_COLUMN));
+                evnt.updateFromJson(event);
                 evnt.save();
             }
             else {
