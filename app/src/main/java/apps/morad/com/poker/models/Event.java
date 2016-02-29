@@ -5,6 +5,7 @@ import android.provider.BaseColumns;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,7 +20,7 @@ import java.util.Date;
  */
 @Table(name = "Events", id = BaseColumns._ID)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Event extends Model{
+public class Event extends Model {
 
     public static final String EVENT_ID_COLUMN = "eventid";
     public static final String CREATED_DATE_COLUMN = "createdDate";
@@ -68,6 +69,13 @@ public class Event extends Model{
         this.eventId = eventId;
         this.createdDate = createdDate;
         this.creator = creator;
+    }
+
+    public static Event getActiveEvent() {
+        return new Select()
+                .from(Event.class)
+                .where(Event.IS_CLOSED_COLUMN + "= 0")
+                .executeSingle();
     }
 
     @JsonIgnore

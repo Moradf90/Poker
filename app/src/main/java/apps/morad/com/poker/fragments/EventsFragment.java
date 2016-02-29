@@ -1,7 +1,9 @@
 package apps.morad.com.poker.fragments;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -35,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import apps.morad.com.poker.R;
-import apps.morad.com.poker.activities.AddEventActivity;
 import apps.morad.com.poker.activities.MainActivity;
 import apps.morad.com.poker.adapters.EventsCursorAdapter;
 import apps.morad.com.poker.adapters.MemberInEventAdapter;
@@ -109,7 +110,18 @@ public class EventsFragment extends Fragment implements ITaggedFragment{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AddEventActivity.class));
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag(AddOrUpdateEventDialogFragment.TAG);
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+
+                // Create and show the dialog.
+                DialogFragment newFragment = AddOrUpdateEventDialogFragment.newInstance();
+                newFragment.setCancelable(false);
+                newFragment.show(ft, AddOrUpdateEventDialogFragment.TAG);
             }
         });
 
@@ -209,8 +221,6 @@ public class EventsFragment extends Fragment implements ITaggedFragment{
             noStatusMembersTitle.setVisibility(View.GONE);
             noStatusGrid.setVisibility(View.GONE);
         }
-
-
     }
 
     private void onNoStatusMemberClicked(AdapterView<?> parent, int position, Member member, final String eventId, final boolean isClosed) {

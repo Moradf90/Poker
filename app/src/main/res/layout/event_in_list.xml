@@ -80,6 +80,7 @@
                             app:mrl_rippleRoundedCorners="50dp"
                             app:mrl_rippleOverlay="true">
                             <TextView
+                                android:visibility="gone"
                                 android:id="@+id/edit_action"
                                 android:drawableRight="@drawable/edit"
                                 android:layout_width="wrap_content"

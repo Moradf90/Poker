@@ -53,7 +53,7 @@ public class DataSyncAdapter extends AbstractThreadedSyncAdapter {
 
         // on sync get all members
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String url = pref.getString(getContext().getString(R.string.pref_server_url), "http://localhost");
+        String url = getContext().getString(R.string.server_url);
         long lastSync = pref.getLong(getContext().getString(R.string.pref_last_sync), -1);
 
         try{

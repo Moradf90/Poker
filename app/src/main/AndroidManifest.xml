@@ -23,12 +23,16 @@
     <uses-permission android:name="apps.morad.com.poker.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
+    <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name=".PokerApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -38,7 +42,7 @@
             android:value="Poker.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="6" />
+            android:value="1" />
         <meta-data
             android:name="AA_MODELS"
             android:value="apps.morad.com.poker.models.Member, apps.morad.com.poker.models.Event, apps.morad.com.poker.models.Game, apps.morad.com.poker.models.MemberInEvent, apps.morad.com.poker.models.MemberInGame" />
@@ -86,14 +90,6 @@
         </service>
 
         <activity
-            android:name=".activities.AddEventActivity"
-            android:label="@string/title_activity_add_event"
-            android:parentActivityName=".activities.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="apps.morad.com.poker.activities.MainActivity" />
-        </activity>
-        <activity
             android:name=".activities.AddOrUpdateGameActivity"
             android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="portrait">
@@ -140,7 +136,7 @@
         </service>
         <service
             android:name=".services.RegistrationIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
 
     </application>
 
