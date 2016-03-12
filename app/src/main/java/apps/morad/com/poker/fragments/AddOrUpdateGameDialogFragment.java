@@ -1,40 +1,44 @@
-package apps.morad.com.poker.activities;
+package apps.morad.com.poker.fragments;
 
-import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.activeandroid.query.Select;
-import com.facebook.Profile;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import apps.morad.com.poker.R;
+import apps.morad.com.poker.activities.EventDetailsActivity;
 import apps.morad.com.poker.adapters.MemberInEventAdapter;
-import apps.morad.com.poker.models.Event;
 import apps.morad.com.poker.models.Game;
 import apps.morad.com.poker.models.MemberInEvent;
-import apps.morad.com.poker.models.MemberInGame;
-import apps.morad.com.poker.models.builders.EventBuilder;
-import apps.morad.com.poker.thirdParty.HorizontalListView;
 import apps.morad.com.poker.utilities.Utilities;
 
-public class AddOrUpdateGameActivity extends Activity {
+/**
+ * Created by Morad on 3/11/2016.
+ */
+public class AddOrUpdateGameDialogFragment extends DialogFragment {
+
+    public static final String TAG = "addOrUpdateGame";
+    public static AddOrUpdateGameDialogFragment newInstance(){
+        return new AddOrUpdateGameDialogFragment();
+    }
 
     ArrayList<String> membersInEvent;
     ArrayList<String> membersInGame;
@@ -50,35 +54,42 @@ public class AddOrUpdateGameActivity extends Activity {
     Switch _isConsidered;
     ProgressDialog prog;
     SaveEventTask saveEventTask;
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_or_update_game);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_add_or_update_game, container, false);
+    }
 
-        membersInTheEventList = (GridView)findViewById(R.id.members_accept_event);
-        membersInTheGameGrid = (GridView) findViewById(R.id.members_in_the_game);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        _title = (TextView) findViewById(R.id.game_name);
-        _isConsidered = (Switch) findViewById(R.id.game_considered);
+        getDialog().setTitle("New Game");
 
-        eventId = getIntent().getExtras().getString(Game.EVENT_ID_COLUMN);
+        membersInTheEventList = (GridView)view.findViewById(R.id.members_accept_event);
+        membersInTheGameGrid = (GridView) view.findViewById(R.id.members_in_the_game);
+
+        _title = (TextView) view.findViewById(R.id.game_name);
+        _isConsidered = (Switch) view.findViewById(R.id.game_considered);
+
+        eventId = EventDetailsActivity.getEvent().getEventId();
 
         List<MemberInEvent> memberInEvents = new Select().from(MemberInEvent.class)
                 .where(MemberInEvent.EVENT_ID_COLUMN + "= ?"
-                + " and " + MemberInEvent.STATUS_COLUMN + "= ?", eventId, MemberInEvent.ACCEPT_STATUS)
+                        + " and " + MemberInEvent.STATUS_COLUMN + "= ?", eventId, MemberInEvent.ACCEPT_STATUS)
                 .execute();
 
         membersInEvent = new ArrayList<>();
         membersInGame = new ArrayList<>();
 
         if(memberInEvents != null && memberInEvents.size() > 0){
-           for(MemberInEvent mie : memberInEvents){
-               membersInEvent.add(mie.getFbId());
-           }
+            for(MemberInEvent mie : memberInEvents){
+                membersInEvent.add(mie.getFbId());
+            }
         }
 
-        memberInEventAdapter = new MemberInEventAdapter(this, membersInEvent);
-        memberInGameAdapter = new MemberInEventAdapter(this, membersInGame);
+        memberInEventAdapter = new MemberInEventAdapter(getActivity(), membersInEvent);
+        memberInGameAdapter = new MemberInEventAdapter(getActivity(), membersInGame);
 
         membersInTheGameGrid.setAdapter(memberInGameAdapter);
         membersInTheEventList.setAdapter(memberInEventAdapter);
@@ -91,8 +102,8 @@ public class AddOrUpdateGameActivity extends Activity {
                 membersInGame.add(fbId);
                 membersInEvent.remove(membersInEvent.indexOf(fbId));
 
-                memberInEventAdapter.notifyDataSetChanged();
-                memberInGameAdapter.notifyDataSetChanged();
+                memberInEventAdapter.swapProfiles(membersInEvent);
+                memberInGameAdapter.swapProfiles(membersInGame);
 
             }
         });
@@ -105,13 +116,13 @@ public class AddOrUpdateGameActivity extends Activity {
                 membersInEvent.add(fbId);
                 membersInGame.remove(membersInGame.indexOf(fbId));
 
-                memberInEventAdapter.notifyDataSetChanged();
-                memberInGameAdapter.notifyDataSetChanged();
+                memberInEventAdapter.swapProfiles(membersInEvent);
+                memberInGameAdapter.swapProfiles(membersInGame);
 
             }
         });
 
-        findViewById(R.id.game_save).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.game_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -121,7 +132,7 @@ public class AddOrUpdateGameActivity extends Activity {
             }
         });
 
-        prog = new ProgressDialog(this);
+        prog = new ProgressDialog(getActivity());
         prog.setCancelable(false);
         prog.setMessage("Saving ...");
     }
@@ -163,10 +174,10 @@ public class AddOrUpdateGameActivity extends Activity {
         }
 
         Game game;
-        SharedPreferences _pref;
+        String _url;
         @Override
         protected void onPreExecute() {
-            _pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            _url = getActivity().getString(R.string.server_url);
             String id = "g_" + new SecureRandom().nextLong();
 
             List<Game> games = new Select().from(Game.class)
@@ -184,8 +195,7 @@ public class AddOrUpdateGameActivity extends Activity {
                 // send to the server
                 JSONObject data = new JSONObject(Utilities.mapper.writeValueAsString(game));
                 data.put("members", new JSONArray(membersInGame));
-                String url = _pref.getString(getString(R.string.pref_server_url), "http://localhost");
-                JSONObject res = Utilities.sendRequest(url + "/addGame", "POST", data);
+                JSONObject res = Utilities.sendRequest(_url + "/addGame", "POST", data);
                 return res.has("isCreated") && res.getBoolean("isCreated");
             }
             catch (Exception e) {
@@ -200,7 +210,7 @@ public class AddOrUpdateGameActivity extends Activity {
             saveEventTask = null;
 
             if (success) {
-                finish();
+                dismiss();
             } else {
 
             }

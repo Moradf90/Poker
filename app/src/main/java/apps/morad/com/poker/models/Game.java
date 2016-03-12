@@ -138,4 +138,9 @@ public class Game extends Model {
 
         return 0;
     }
+
+    @JsonIgnore
+    public String getName() {
+        return name;
+    }
 }

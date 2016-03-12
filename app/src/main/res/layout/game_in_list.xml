@@ -64,21 +64,6 @@
                             app:mrl_rippleRoundedCorners="50dp"
                             app:mrl_rippleOverlay="true">
                             <TextView
-                                android:id="@+id/edit_action"
-                                android:drawableRight="@drawable/edit"
-                                android:layout_width="wrap_content"
-                                android:layout_margin="3dp"
-                                android:layout_height="wrap_content" />
-                        </apps.morad.com.poker.thirdParty.MaterialRippleLayout>
-                        <apps.morad.com.poker.thirdParty.MaterialRippleLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:mrl_rippleAlpha="0.3"
-                            app:mrl_rippleColor="@color/colorPrimaryDark"
-                            app:mrl_rippleHover="true"
-                            app:mrl_rippleRoundedCorners="50dp"
-                            app:mrl_rippleOverlay="true">
-                            <TextView
                                 android:id="@+id/delete_action"
                                 android:drawableRight="@drawable/delete"
                                 android:layout_width="wrap_content"

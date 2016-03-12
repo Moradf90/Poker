@@ -19,14 +19,15 @@ import apps.morad.com.poker.utilities.MembersLoader;
 /**
  * Created by Morad on 12/31/2015.
  */
-    public class MemberInEventAdapter extends BaseAdapter {
+public class MemberInEventAdapter extends BaseAdapter {
 
     Context context;
     ArrayList<String> profiles;
 
     public MemberInEventAdapter(Context context, ArrayList<String> profiles){
         this.context = context;
-        this.profiles = profiles;
+        this.profiles = new ArrayList<>();
+        this.profiles.addAll(profiles);
     }
 
     @Override
@@ -62,10 +63,8 @@ import apps.morad.com.poker.utilities.MembersLoader;
     }
 
     public void swapProfiles(ArrayList<String> profiles){
-        if(this.profiles != profiles) {
-            this.profiles.clear();
-            this.profiles.addAll(profiles);
-        }
+        this.profiles.clear();
+        this.profiles.addAll(profiles);
         notifyDataSetChanged();
     }
 

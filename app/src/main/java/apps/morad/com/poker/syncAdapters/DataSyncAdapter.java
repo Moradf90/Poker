@@ -11,6 +11,7 @@ import android.content.SyncResult;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.activeandroid.query.Select;
 import com.activeandroid.query.Update;
@@ -50,6 +51,8 @@ public class DataSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+
+        Log.d("SyncAdapter", System.currentTimeMillis() + "");
 
         // on sync get all members
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());

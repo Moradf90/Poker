@@ -32,15 +32,15 @@ public class ActionAdapter extends BaseAdapter {
     int clickedItem = 0;
     public ActionAdapter(Context context){
         this._context = context;
-        _actionTitles = new String[3];
-        _actionDrawables = new int[3];
+        _actionTitles = new String[2];
+        _actionDrawables = new int[2];
 
 //        _actionDrawables[0] = R.drawable.action_home;
 //        _actionTitles[0] = "Home";
         _actionDrawables[0] = R.drawable.action_members;
         _actionTitles[0] = "Members";
-        _actionDrawables[2] = R.drawable.action_games;
-        _actionTitles[2] = "Games";
+//        _actionDrawables[2] = R.drawable.action_games;
+//        _actionTitles[2] = "Games";
         _actionDrawables[1] = R.drawable.action_events;
         _actionTitles[1] = "Events";
 //        _actionDrawables[4] = R.drawable.action_settings;

@@ -39,7 +39,6 @@ import java.util.Date;
 import java.util.List;
 
 import apps.morad.com.poker.R;
-import apps.morad.com.poker.activities.AddOrUpdateGameActivity;
 import apps.morad.com.poker.activities.MainActivity;
 import apps.morad.com.poker.adapters.EventGameGroupCursorAdapter;
 import apps.morad.com.poker.adapters.GamesCursorAdapter;
@@ -302,9 +301,6 @@ public class GamesFragments extends Fragment implements ITaggedFragment{
                     snackbar.getView().setBackgroundResource(R.color.colorPrimaryDark);
                     snackbar.show();
                 } else {
-                    Intent intent = new Intent(getActivity(), AddOrUpdateGameActivity.class);
-                    intent.putExtra(Game.EVENT_ID_COLUMN, event.getEventId());
-                    startActivity(intent);
                 }
             }
         }
@@ -408,8 +404,7 @@ public class GamesFragments extends Fragment implements ITaggedFragment{
         String url;
         @Override
         protected void onPreExecute() {
-            SharedPreferences _pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            url = _pref.getString(getActivity().getString(R.string.pref_server_url), "http://localhost");
+            url = getActivity().getResources().getString(R.string.server_url);
         }
         @Override
         protected Void doInBackground(String... params) {
@@ -465,8 +460,7 @@ public class GamesFragments extends Fragment implements ITaggedFragment{
         String url;
         @Override
         protected void onPreExecute() {
-            SharedPreferences _pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            url = _pref.getString(getActivity().getString(R.string.pref_server_url), "http://localhost");
+            url = getActivity().getResources().getString(R.string.server_url);
         }
         @Override
         protected Void doInBackground(String... params) {

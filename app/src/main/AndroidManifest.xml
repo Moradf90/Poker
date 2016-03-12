@@ -89,15 +89,6 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-        <activity
-            android:name=".activities.AddOrUpdateGameActivity"
-            android:parentActivityName=".activities.MainActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="apps.morad.com.poker.activities.MainActivity" />
-        </activity>
-
         <receiver
             android:name=".receivers.StartSyncReceiver"
             android:enabled="true"
@@ -109,6 +100,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
@@ -138,6 +130,15 @@
             android:name=".services.RegistrationIntentService"
             android:exported="false" />
 
+        <activity
+            android:name=".activities.EventDetailsActivity"
+            android:label="@string/title_activity_event_details"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="apps.morad.com.poker.activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

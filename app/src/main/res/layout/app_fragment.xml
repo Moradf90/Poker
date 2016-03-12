@@ -14,64 +14,55 @@
         app:mrl_rippleColor="@color/colorPrimary"
         app:mrl_rippleHover="true"
         app:mrl_rippleOverlay="true">
-    <FrameLayout
-        android:background="@color/colorBackgroundSilver"
-        android:layout_width="match_parent"
-        android:layout_height="40dp">
-        <ImageView
-            android:id="@+id/drawer_indicator"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:scaleType="centerInside"
-            android:layout_gravity="start"
-            />
+        <FrameLayout
+            android:background="@color/colorBackgroundSilver"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <ImageView
+                android:id="@+id/drawer_indicator"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerInside"
+                android:layout_gravity="start"
+                />
 
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:orientation="horizontal"
-            android:layout_height="40dp"
-            android:paddingRight="5dp"
-            android:layout_gravity="center_vertical|right">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_height="40dp"
+                android:paddingRight="5dp"
+                android:layout_gravity="center_vertical|right">
 
-            <apps.morad.com.poker.thirdParty.MaskableFrameLayout
-                android:layout_width="35dp"
-                app:mask="@drawable/masking_masking"
-                app:porterduffxfermode="DST_IN"
-                android:padding="-2dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="6dp"
-                android:layout_height="35dp">
-                <com.facebook.login.widget.ProfilePictureView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/action_bar_profile_pic"
-                    >
-                </com.facebook.login.widget.ProfilePictureView>
-            </apps.morad.com.poker.thirdParty.MaskableFrameLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/action_bar_profile_name"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimary" />
+                <apps.morad.com.poker.thirdParty.EProfilePictureView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:id="@+id/action_bar_profile_pic"></apps.morad.com.poker.thirdParty.EProfilePictureView>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/action_bar_profile_name"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimary" />
 
-            <TextView
-                android:textAlignment="center"
-                android:id="@+id/action_bar_profile_score"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                    <TextView
+                        android:textAlignment="center"
+                        android:id="@+id/action_bar_profile_score"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+
             </LinearLayout>
 
-        </LinearLayout>
 
 
-
-    </FrameLayout>
+        </FrameLayout>
     </apps.morad.com.poker.thirdParty.MaterialRippleLayout>
     <!-- Content -->
     <android.support.v4.widget.DrawerLayout
@@ -103,9 +94,8 @@
                 android:layout_margin="5dp"
                 android:id="@+id/action_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="fill_parent"
                 android:layout_weight="1"></ListView>
-
 
             <TextView
                 android:layout_width="match_parent"

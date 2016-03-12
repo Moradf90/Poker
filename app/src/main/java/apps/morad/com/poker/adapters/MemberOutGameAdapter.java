@@ -36,7 +36,8 @@ public class MemberOutGameAdapter extends BaseAdapter {
 
     public MemberOutGameAdapter(Context context, List<MemberInGame> members){
         this.context = context;
-        this.members = members;
+        this.members = new ArrayList<>();
+        this.members.addAll(members);
     }
 
     @Override
@@ -105,7 +106,8 @@ public class MemberOutGameAdapter extends BaseAdapter {
     }
 
     public void swapProfiles(ArrayList<MemberInGame> membersInGame){
-        this.members = membersInGame;
+        this.members.clear();
+        this.members.addAll(membersInGame);
         notifyDataSetChanged();
     }
 }

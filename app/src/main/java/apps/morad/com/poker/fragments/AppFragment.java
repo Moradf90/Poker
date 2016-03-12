@@ -29,6 +29,7 @@ import apps.morad.com.poker.drawables.DrawerArrowDrawable;
 import apps.morad.com.poker.interfaces.IActionItemsClicked;
 import apps.morad.com.poker.interfaces.ITaggedFragment;
 import apps.morad.com.poker.models.Member;
+import apps.morad.com.poker.thirdParty.EProfilePictureView;
 import apps.morad.com.poker.utilities.MembersLoader;
 
 import static android.view.Gravity.START;
@@ -172,13 +173,14 @@ public class AppFragment extends Fragment implements IActionItemsClicked {
                 }
 
                 actionAdapter.notifyDataSetChanged();
+                toggleDrawer();
             }
         });
     }
 
     private void setProfileBarData(View pView)
     {
-        ((ProfilePictureView)pView.findViewById(R.id.action_bar_profile_pic)).setProfileId(Profile.getCurrentProfile().getId());
+        ((EProfilePictureView)pView.findViewById(R.id.action_bar_profile_pic)).setProfileId(Profile.getCurrentProfile().getId());
         ((TextView)pView.findViewById(R.id.action_bar_profile_name)).setText(Profile.getCurrentProfile().getName());
     }
 
@@ -243,16 +245,7 @@ public class AppFragment extends Fragment implements IActionItemsClicked {
 
     @Override
     public void onGamesItemClicked() {
-        if(currentFragment != GamesFragments.FRAGMENT_TAG) {
-            FragmentManager fragmentManager = getChildFragmentManager();
-            if (fragmentManager.findFragmentByTag(GamesFragments.FRAGMENT_TAG) == null) {
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.view_content, GamesFragments.getInstance(), GamesFragments.FRAGMENT_TAG);
-                transaction.commit();
-                currentFragment = GamesFragments.FRAGMENT_TAG;
-                currentFragmentObj = GamesFragments.getInstance();
-            }
-        }
+
     }
 
     @Override

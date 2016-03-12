@@ -33,6 +33,6 @@ public class StartSyncReceiver extends BroadcastReceiver {
                 account,
                 authority,
                 Bundle.EMPTY,
-                60); // every 12 hours
+                60 * 30); // every half hour
     }
 }
