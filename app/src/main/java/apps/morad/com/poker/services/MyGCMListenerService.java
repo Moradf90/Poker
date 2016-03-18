@@ -211,7 +211,8 @@ public class MyGCMListenerService extends GcmListenerService {
         if(type.equals("Members")){
             Member mem = new Member(obj.getString(Member.FB_ID_COLUMN),
                     obj.getString(Member.FIRST_NAME_COLUMN), obj.getString(Member.LAST_NAME_COLUMN),
-                    obj.getInt(Member.SCORE_COLUMN), obj.getString(Member.MEDAL_COLUMN), obj.getBoolean(Member.IS_ADMIN_COLUMN));
+                    obj.getInt(Member.SCORE_COLUMN), obj.getString(Member.MEDAL_COLUMN),
+                    obj.getBoolean(Member.IS_ADMIN_COLUMN), obj.getInt(Member.REMAINING_GAMES));
             mem.save();
             notifyUpdate(MainActivity.MEMBERS_UPDATED);
 

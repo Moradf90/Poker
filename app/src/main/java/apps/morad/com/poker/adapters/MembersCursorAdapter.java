@@ -14,6 +14,7 @@ import com.facebook.login.widget.ProfilePictureView;
 import apps.morad.com.poker.R;
 import apps.morad.com.poker.models.Medal;
 import apps.morad.com.poker.models.Member;
+import apps.morad.com.poker.thirdParty.EProfilePictureView;
 
 /**
  * Created by Morad on 12/16/2015.
@@ -21,9 +22,10 @@ import apps.morad.com.poker.models.Member;
 public class MembersCursorAdapter extends CursorAdapter {
 
     private static class ViewHolder{
-        ProfilePictureView image;
+        EProfilePictureView image;
         TextView name;
         TextView score;
+        TextView games;
         ImageView medal;
     }
 
@@ -38,11 +40,11 @@ public class MembersCursorAdapter extends CursorAdapter {
                 .inflate(R.layout.member_in_list, parent, false);
 
         ViewHolder holder = new ViewHolder();
-        holder.image = (ProfilePictureView) view.findViewById(R.id.member_image);
+        holder.image = (EProfilePictureView) view.findViewById(R.id.member_image);
         holder.name = (TextView)view.findViewById(R.id.member_name);
         holder.score = (TextView)view.findViewById(R.id.member_score);
         holder.medal = (ImageView)view.findViewById(R.id.member_medal_image);
-
+        holder.games = (TextView)view.findViewById(R.id.member_games);
         view.setTag(holder);
 
         return view;
@@ -55,12 +57,19 @@ public class MembersCursorAdapter extends CursorAdapter {
         String fname = cursor.getString(cursor.getColumnIndex(Member.FIRST_NAME_COLUMN));
         String lname = cursor.getString(cursor.getColumnIndex(Member.LAST_NAME_COLUMN));
         int score = cursor.getInt(cursor.getColumnIndex(Member.SCORE_COLUMN));
+        int games = cursor.getInt(cursor.getColumnIndex(Member.REMAINING_GAMES));
         String medal = cursor.getString(cursor.getColumnIndex(Member.MEDAL_COLUMN));
 
         ViewHolder holder = (ViewHolder)view.getTag();
         holder.image.setProfileId(fbId);
         holder.name.setText(fname + " " + lname);
         holder.score.setText(score + " points");
+
+        holder.games.setText(games + " games, ");
+        holder.games.setVisibility(View.VISIBLE);
+        if(games == 0){
+            holder.games.setVisibility(View.GONE);
+        }
 
         Medal medal1 = Medal.getByName(medal);
 

@@ -207,7 +207,8 @@ public class DataSyncAdapter extends AbstractThreadedSyncAdapter {
             if(mem == null){ // new member
                 mem = new Member(member.getString(Member.FB_ID_COLUMN),
                         member.getString(Member.FIRST_NAME_COLUMN), member.getString(Member.LAST_NAME_COLUMN),
-                        member.getInt(Member.SCORE_COLUMN), member.getString(Member.MEDAL_COLUMN), member.getBoolean(Member.IS_ADMIN_COLUMN));
+                        member.getInt(Member.SCORE_COLUMN), member.getString(Member.MEDAL_COLUMN),
+                        member.getBoolean(Member.IS_ADMIN_COLUMN), member.getInt(Member.REMAINING_GAMES));
                 mem.save();
             }
             else {

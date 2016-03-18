@@ -24,6 +24,7 @@ public class Member extends Model{
     public static final String SCORE_COLUMN = "score";
     public static final String MEDAL_COLUMN = "medal";
     public static final String IS_ADMIN_COLUMN = "isAdmin";
+    public static final String REMAINING_GAMES = "games";
 
 
     @JsonProperty(FB_ID_COLUMN)
@@ -45,13 +46,18 @@ public class Member extends Model{
     @Column(name = IS_ADMIN_COLUMN)
     boolean isAdmin;
 
+    @JsonProperty(REMAINING_GAMES)
+    @Column(name = REMAINING_GAMES)
+    int remainingGame;
+
     public Member(){
         super();
     }
 
-    public Member(String _id, String _firstName, String _lastName, int score, String medal, boolean _isAdmin) {
+    public Member(String _id, String _firstName, String _lastName, int score, String medal, boolean _isAdmin, int _games) {
         this(_id,_firstName,_lastName,score,medal);
         isAdmin = _isAdmin;
+        remainingGame = _games;
     }
 
     public Member(String _id, String _firstName, String _lastName, int score, String medal) {
@@ -108,6 +114,9 @@ public class Member extends Model{
             }
             if (obj.has(LAST_NAME_COLUMN)){
                 this.lastName = obj.getString(LAST_NAME_COLUMN);
+            }
+            if (obj.has(REMAINING_GAMES)){
+                this.remainingGame = obj.getInt(REMAINING_GAMES);
             }
         }
         catch (Exception e){}
